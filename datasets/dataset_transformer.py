@@ -41,8 +41,9 @@ class CombTrainDataset(Dataset):
     def sample_pair_style(self, font, trg_unis, avail_unis):
         trg_uni = trg_unis[0] 
         style_unis = self.cr_mapping[trg_uni]
+        # imgs = paddle.concat([self.env_get(self.env, font, uni.upper(), self.transform) for uni in style_unis])
         try:
-            imgs = paddle.concat([self.env_get(self.env, font, uni, self.transform) for uni in style_unis])
+            imgs = paddle.concat([self.env_get(self.env, font, uni.upper(), self.transform) for uni in style_unis])
         except:
             return None, None
             
