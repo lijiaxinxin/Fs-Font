@@ -1,0 +1,29 @@
+use_half: False
+
+work_dir: ./expr/1-dataset20/
+data_path: ./archive/dataset20/lmdb/  # path/to/saved/lmdb
+data_meta: ./archive/dataset20/meta/train.json  #meta/train.json
+content_reference_json: ./archive/dataset20/cr_mapping.json
+content_font: "id_037_FZZJ-ZSZKJW.TTF"
+
+input_size: 128
+num_heads: 8
+kshot: 3
+
+batch_size: 32
+n_workers: 6
+iter: 500000
+g_lr: 2e-4
+d_lr: 4e-4 
+step_size: 10000
+gamma: 0.95
+overwrite: False
+adam_betas: [0.0, 0.9]
+
+cv_n_unis: 15 # 30
+cv_n_fonts: 9 # 10
+
+print_freq: 1000 
+val_freq: 10000 
+save_freq: 50000 
+tb_freq: 10000
