@@ -52,7 +52,7 @@ def setup_args_and_config():
     cfg.name = args.name
 
     (cfg.work_dir / "logs").mkdir(parents=True, exist_ok=True)
-    (cfg.work_dir / "checkpoints" / unique_name).mkdir(parents=True, exist_ok=True)
+    (cfg.work_dir / "checkpoints").mkdir(parents=True, exist_ok=True)
 
     if cfg.save_freq % cfg.val_freq:
         raise ValueError("save_freq has to be multiple of val_freq.")
@@ -65,12 +65,12 @@ def train(args, cfg, ddp_gpu=-1):
     train
     """
     paddle.device.set_device('gpu')
-    logger_path = cfg.work_dir / "logs" / "{}.log".format(cfg.unique_name)
+    logger_path = cfg.work_dir / "{}.log".format(cfg.unique_name)
     logger = Logger.get(file_path=logger_path, level="info", colorize=True)
 
     image_scale = 0.6
-    writer_path = cfg.work_dir / "runs" / cfg.unique_name
-    eval_image_path = cfg.work_dir / "images" / cfg.unique_name
+    writer_path = cfg.work_dir / "runs"
+    eval_image_path = cfg.work_dir / "images"
     writer = utils.TBDiskWriter(writer_path, eval_image_path, scale=image_scale)
 
     args_str = dump_args(args)
