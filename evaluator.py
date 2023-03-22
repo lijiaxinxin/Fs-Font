@@ -147,4 +147,39 @@ class Evaluator:
         print ('num_saved_img: ', len(ch_list_check))
         return output_folder
 
+    @paddle_eval
+    def save_imgs(self, gen, loader, save_dir, reduction='mean'):
+        output_folder = save_dir
+        os.makedirs(output_folder, exist_ok=True)
+        ch_list_check = []
+        for (in_style_ids, in_imgs, trg_style_ids,
+             trg_unis, style_unis, style_sample_index, trg_sample_index, content_imgs) in tqdm.tqdm(loader()):
+
+            if self.use_half:
+                in_imgs = in_imgs.half()
+                content_imgs = content_imgs.half()
+
+            out, attention_masks = gen.infer(in_style_ids, in_imgs, trg_style_ids, style_sample_index, trg_sample_index,
+                                             content_imgs, reduction=reduction)
+            # attention_masks：[B, num_heads, 3HW,HW]
+            dec_unis = trg_unis.detach().cpu().numpy()
+            style_dec_unis = style_unis.detach().cpu().numpy()
+            font_ids = trg_style_ids.detach().cpu().numpy()
+            images = out.detach().cpu()  # [B, 1, 128, 128]
+            for idx, (dec_uni, font_id, image) in enumerate(zip(dec_unis, font_ids, images)):
+                font_name = loader.dataset.fonts[font_id]  # name.ttf
+                uni = hex(dec_uni)[2:].upper().zfill(4)
+                ch = '\\u{:s}'.format(uni).encode().decode('unicode_escape')
+                image = self.normalize(image)
+                final_img = paddle.transpose(paddle.clip(image * 255, min=0, max=255), (1, 2, 0)).cpu().numpy()
+                if final_img.shape[-1] == 1:
+                    final_img = final_img.squeeze(-1)  # [128, 128]
+                save_path = os.path.join(output_folder, font_name)
+                os.makedirs(save_path, exist_ok=True)
+                dst_path = os.path.join(save_path, f'{ch}.png')
+                ch_list_check.append(ch)
+                cv2.imwrite(dst_path, final_img)
+
+        print('num_saved_img: ', len(ch_list_check))
+
 
