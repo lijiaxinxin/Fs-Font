@@ -51,7 +51,7 @@ def setup_args_and_config():
     cfg.unique_name = unique_name
     cfg.name = args.name
 
-    (cfg.work_dir / "logs").mkdir(parents=True, exist_ok=True)
+    # (cfg.work_dir / "logs").mkdir(parents=True, exist_ok=True)
     (cfg.work_dir / "checkpoints").mkdir(parents=True, exist_ok=True)
 
     if cfg.save_freq % cfg.val_freq:

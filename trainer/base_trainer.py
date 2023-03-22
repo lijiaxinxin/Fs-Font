@@ -172,8 +172,7 @@ class BaseTrainer:
             save_dic['d_optimizer'] = self.d_optim.state_dict()
             save_dic['d_scheduler'] = self.d_scheduler.state_dict()
 
-
-        ckpt_dir = self.cfg['work_dir'] / "checkpoints" / self.cfg['unique_name']
+        ckpt_dir = self.cfg['work_dir'] / "checkpoints"
         step_ckpt_name = "{:06d}-{}.pdparams".format(self.step, self.cfg['name'])
         last_ckpt_name = "last.pdparams"
         step_ckpt_path = Path.cwd() /ckpt_dir / step_ckpt_name
